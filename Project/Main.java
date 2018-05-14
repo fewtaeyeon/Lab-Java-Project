@@ -21,21 +21,21 @@ public class Main extends GraphicsProgram {
     private static final int HEIGHT = SQUARE_SIZE * NROWS + 22;
 
     private static Board board = new Board();
+    
+    private static boolean isGameOver = false;
 
     public void run() {
         setSize(WIDTH, HEIGHT);
         addMouseListeners();
-        playGame();
-    }
-
-    private void playGame() {
-        display();
+         display();
     }
 
     private void display() {
-        drawbackground();
-        displayBoard();
-        displayLabel();
+        if (!isGameOver) {
+            drawbackground();
+            displayBoard();
+            displayLabel();
+        }
     }
 
     private void drawbackground() {
@@ -62,6 +62,7 @@ public class Main extends GraphicsProgram {
             whiteWin.setFont("SansSerif-BOLD-34");
             whiteWin.setColor(Color.BLACK);
             add(whiteWin);
+            isGameOver = true;
         }
         
         if (PieceMouseAction.whiteLife == 0) {
@@ -69,6 +70,7 @@ public class Main extends GraphicsProgram {
             blackWin.setFont("SansSerif-BOLD-34");
             blackWin.setColor(Color.BLACK);
             add(blackWin);
+            isGameOver = true;
         }
     }
 
