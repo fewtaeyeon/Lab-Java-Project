@@ -16,9 +16,9 @@ public class Board {
         for (int i = 0; i < NROWS; i++) {
             for (int j = 0; j < NCOLUMNS; j++) {
                 if ((i + j) % 2 == 0) {
-                    if (i < 2) {
+                    if (i < 3) {
                         board[i][j] = new Square(new Piece(true), true, i, j);
-                    } else if (i > 5) {
+                    } else if (i > 4) {
                         board[i][j] = new Square(new Piece(false), true, i, j);
                     } else {
                         board[i][j] = new Square(null, true, i, j);

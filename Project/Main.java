@@ -9,10 +9,10 @@ import java.awt.event.MouseEvent;
 public class Main extends GraphicsProgram {
 
     /* Number of rows */
-    private static final int NROWS = 8;
+    public static final int NROWS = 8;
 
     /* Number of columns */
-    private static final int NCOLUMNS = 8;
+    public static final int NCOLUMNS = 8;
 
     private static final int SQUARE_SIZE = 80;
 
@@ -21,13 +21,13 @@ public class Main extends GraphicsProgram {
     private static final int HEIGHT = SQUARE_SIZE * NROWS + 22;
 
     private static Board board = new Board();
-    
+
     private static boolean isGameOver = false;
 
     public void run() {
         setSize(WIDTH, HEIGHT);
         addMouseListeners();
-         display();
+        display();
     }
 
     private void display() {
@@ -46,25 +46,30 @@ public class Main extends GraphicsProgram {
     }
 
     private void displayLabel() {
-        
-        GLabel blackLive = new GLabel("Black remaining life : " + PieceMouseAction.blackLife, WIDTH - 190, HEIGHT / 2 -50);
+
+        GLabel blackLive = new GLabel(
+                "Black remaining life : " + PieceMouseAction.blackLife,
+                WIDTH - 190, HEIGHT / 2 - 50);
         blackLive.setFont("SansSerif-BOLD-14");
         blackLive.setColor(Color.BLACK);
         add(blackLive);
-        
-        GLabel whiteLive = new GLabel("White remaining life : " + PieceMouseAction.whiteLife, WIDTH - 190, HEIGHT / 2);
+
+        GLabel whiteLive = new GLabel(
+                "White remaining life : " + PieceMouseAction.whiteLife,
+                WIDTH - 190, HEIGHT / 2);
         whiteLive.setFont("SansSerif-BOLD-14");
         whiteLive.setColor(Color.BLACK);
         add(whiteLive);
-        
+
         if (PieceMouseAction.blackLife == 0) {
-            GLabel whiteWin = new GLabel("White Win!", WIDTH - 190, HEIGHT - 30);
+            GLabel whiteWin = new GLabel("White Win!", WIDTH - 190,
+                    HEIGHT - 30);
             whiteWin.setFont("SansSerif-BOLD-34");
             whiteWin.setColor(Color.BLACK);
             add(whiteWin);
             isGameOver = true;
         }
-        
+
         if (PieceMouseAction.whiteLife == 0) {
             GLabel blackWin = new GLabel("Black Win!", WIDTH - 190, 30);
             blackWin.setFont("SansSerif-BOLD-34");
@@ -82,16 +87,29 @@ public class Main extends GraphicsProgram {
                 if (board.getBoard()[i][j].isWalkable()) {
                     if (board.getBoard()[i][j].getPiece() == null) {
                         createSquare(Y, X, Color.WHITE);
-                    } else if (board.getBoard()[i][j].getPiece().isBlack()) {
-                        createSquare(Y, X, Color.WHITE);
-                        createCircle(Y, X, Color.BLACK);
-                    } else if (board.getBoard()[i][j].getPiece().isWhite()) {
-                        createSquare(Y, X, Color.WHITE);
-                        createCircle(Y, X, Color.WHITE);
+                    } else if (!board.getBoard()[i][j].getPiece().isHos()) {
+                        if (board.getBoard()[i][j].getPiece().isBlack()) {
+                            createSquare(Y, X, Color.WHITE);
+                            createCircle(Y, X, Color.BLACK);
+                        } else if (board.getBoard()[i][j].getPiece()
+                                .isWhite()) {
+                            createSquare(Y, X, Color.WHITE);
+                            createCircle(Y, X, Color.WHITE);
+                        }
+                    } else {
+                        if (board.getBoard()[i][j].getPiece().isBlack()) {
+                            createSquare(Y, X, Color.WHITE);
+                            createHos(Y, X, Color.BLACK);
+                        } else if (board.getBoard()[i][j].getPiece()
+                                .isWhite()) {
+                            createSquare(Y, X, Color.WHITE);
+                            createHos(Y, X, Color.WHITE);
+                        }
                     }
                 } else {
                     createSquare(Y, X, Color.BLACK);
                 }
+
             }
             System.out.println();
         }
@@ -103,8 +121,10 @@ public class Main extends GraphicsProgram {
         square.setFillColor(color);
         square.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                PieceMouseAction.clicked(board.getBoard()[y/SQUARE_SIZE][x/SQUARE_SIZE], board);
-                System.out.println(y/SQUARE_SIZE + " " + x/SQUARE_SIZE);
+                PieceMouseAction.clicked(
+                        board.getBoard()[y / SQUARE_SIZE][x / SQUARE_SIZE],
+                        board);
+                //System.out.println(y / SQUARE_SIZE + " " + x / SQUARE_SIZE);
                 display();
             }
         });
@@ -118,31 +138,58 @@ public class Main extends GraphicsProgram {
         circle.setFillColor(color);
         circle.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                PieceMouseAction.clicked(board.getBoard()[y/SQUARE_SIZE][x/SQUARE_SIZE], board);
-                System.out.println(y/SQUARE_SIZE + " " + x/SQUARE_SIZE);
+                PieceMouseAction.clicked(
+                        board.getBoard()[y / SQUARE_SIZE][x / SQUARE_SIZE],
+                        board);
+                // System.out.println(y / SQUARE_SIZE + " " + x / SQUARE_SIZE);
                 display();
             }
         });
         add(circle);
     }
 
-    private void commandlineDisplay() {
-        for (int i = 0; i < NROWS; i++) {
-            for (int j = 0; j < NCOLUMNS; j++) {
-                if (board.getBoard()[i][j].isWalkable()) {
-                    if (board.getBoard()[i][j].getPiece() == null) {
-                        System.out.printf(" ");
-                    } else if (board.getBoard()[i][j].getPiece().isBlack()) {
-                        System.out.printf("B");
-                    } else if (board.getBoard()[i][j].getPiece().isWhite()) {
-                        System.out.printf("W");
-                    }
-                } else {
-                    System.out.printf("#");
-                }
-                //System.out.printf("[%d,%d] ", board.getBoard()[i][j].getPositionX(), board.getBoard()[i][j].getPositionY());
-            }
-            System.out.println();
+    private void createHos(int x, int y, Color color) {
+        createCircle(x, y, color);
+        GOval circle = new GOval(x + SQUARE_SIZE / 3, y + SQUARE_SIZE / 3,
+                SQUARE_SIZE / 4, SQUARE_SIZE / 4);
+        circle.setFilled(true);
+        if (color.equals(Color.BLACK)) {
+            circle.setFillColor(Color.WHITE);
+        } else {
+            circle.setFillColor(Color.BLACK);
         }
+        circle.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                PieceMouseAction.clicked(
+                        board.getBoard()[y / SQUARE_SIZE][x / SQUARE_SIZE],
+                        board);
+                // System.out.println(y / SQUARE_SIZE + " " + x / SQUARE_SIZE);
+                display();
+            }
+        });
+
+        add(circle);
     }
+
+//    private void commandlineDisplay() {
+//        for (int i = 0; i < NROWS; i++) {
+//            for (int j = 0; j < NCOLUMNS; j++) {
+//                if (board.getBoard()[i][j].isWalkable()) {
+//                    if (board.getBoard()[i][j].getPiece() == null) {
+//                        System.out.printf(" ");
+//                    } else if (board.getBoard()[i][j].getPiece().isBlack()) {
+//                        System.out.printf("B");
+//                    } else if (board.getBoard()[i][j].getPiece().isWhite()) {
+//                        System.out.printf("W");
+//                    }
+//                } else {
+//                    System.out.printf("#");
+//                }
+//                // System.out.printf("[%d,%d] ",
+//                // board.getBoard()[i][j].getPositionX(),
+//                // board.getBoard()[i][j].getPositionY());
+//            }
+//            System.out.println();
+//        }
+//    }
 }
