@@ -1,5 +1,3 @@
-import acm.graphics.GImage;
-
 public class Board {
 
     /* Number of rows */
@@ -7,8 +5,6 @@ public class Board {
 
     /* Number of columns */
     private static final int NCOLUMNS = 8;
-
-    GImage selection = new GImage("selection.png");
 
     private Square[][] board = new Square[NROWS][NCOLUMNS];
 

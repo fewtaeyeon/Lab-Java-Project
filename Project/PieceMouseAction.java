@@ -1,4 +1,3 @@
-
 public class PieceMouseAction {
 
     private static boolean isSelected = false;
